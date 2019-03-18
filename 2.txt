@@ -1,0 +1,49 @@
+#include "SevSeg.h"
+SevSeg sevseg;
+int Hour = 0;
+int Min = 0;
+
+void setup() {
+  byte numDigits = 4;
+  byte digitPins[] = {2, 3, 4, 5};
+  byte segmentPins[] = {8, 9, 10, 11, 12, 13, 14, 15};
+  sevseg.begin(COMMON_CATHODE, numDigits, digitPins, segmentPins);
+  pinMode(6, INPUT);
+  pinMode(16, INPUT);
+}
+
+void loop() {
+  if (digitalRead(6) == 1)
+  {
+    Min = 0;
+    Hour = 0;
+  }
+  if (digitalRead(16) == 1)
+  {
+    sevseg.setNumber(Hour * 100 + Min, 4);
+    Min = Min - 1;
+    if (Min == 0)
+    {
+      Min = 59;
+      if (Hour == 0)
+        Hour = 23;
+      else
+        Hour--;
+    }
+  }
+  else
+  {
+    sevseg.setNumber(Hour * 100 + Min, 4);
+    Min = Min + 1;
+    if (Min == 60)
+    {
+      Min = 0;
+      if (Hour == 23)
+        Hour = 0;
+      else
+        Hour++;
+    }
+  }
+  for (int i = 0; i < 1000000; i++) 
+    sevseg.refreshDisplay();
+}

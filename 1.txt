@@ -1,0 +1,26 @@
+#include "SevSeg.h"
+SevSeg sevseg;
+int Hour = 0, Min = 0;
+byte numDigits = 4; //幾位數
+byte digitPins[] = {2, 3, 4, 5};  //四個位數的腳位
+byte segmentPins[] = {8, 9, 10, 11, 12, 13, 14, 15}; //a~h腳位
+
+void setup() {
+  sevseg.begin(COMMON_CATHODE, numDigits, digitPins, segmentPins);
+  sevseg.setBrightness(90); //亮度
+}
+
+void loop() {
+  sevseg.setNumber(Hour * 100 + Min, 4);
+  Min = Min + 1;
+  if (Min == 60)
+  {
+    Min = 0;
+    if (Hour == 23)
+      Hour = 0;
+    else
+      Hour++;
+  }
+  for (int i = 0; i <= 1998099; i++)
+    sevseg.refreshDisplay();  //當delay用
+}
